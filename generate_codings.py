@@ -1,136 +1,34 @@
-import sqlite3
+
 import csv
 import sys
+import RQDA
+
+
+r = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+c = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+d = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+x = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+y = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+z = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+a = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+b = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+e = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+f = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
+g = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
 
 # from 1 to 11 or -1 for gephi files
 codings = -1
 # 1 is open, 2 is closed
-skill = 1
+file_catid = 1
 
-conn = sqlite3.connect("db.rqda") # or use :memory: to put it in RAM
-
-cursor1 = conn.cursor()
-
-#######################################
-############ FILES QUERY ##############
-#######################################
-
-sql="""
-SELECT DISTINCT name
-FROM filecat
-WHERE status = 1
-"""
-cursor1.execute(sql)
-
-col = 0
-all_file_cats=[elt[col] for elt in cursor1.fetchall()]
-
-sql = """
-SELECT source.id, source.name, GROUP_CONCAT(filecat.name)  as categories
-FROM source
-	LEFT JOIN treefile
-		ON source.id = treefile.fid
-		LEFT JOIN filecat
-			ON treefile.catid = filecat.catid
-WHERE source.status = 1
-	AND treefile.status = 1
-	AND filecat.status = 1
-GROUP BY source.id
-"""
-cursor1.execute(sql)
-
-files = {}
-for _id, name, categories in cursor1.fetchall():
-    files[_id] = [name]
-    for cat in all_file_cats:
-        if cat in categories:
-            files[_id].append(1)
-        else:
-            files[_id].append(0)
+rqda = RQDA.RQDA("db.rqda")
+all_file_cats = rqda.get_all_file_cats()
+files = rqda.get_files()
+all_code_cats = rqda.get_all_code_cats()
+codes = rqda.get_codes()
+cods = rqda.get_codings(file_catid)
 
 
-
-#######################################
-############ CODES QUERY ##############
-#######################################
-
-sql="""
-SELECT DISTINCT name
-FROM codecat
-WHERE status = 1
-"""
-cursor1.execute(sql)
-
-col = 0
-all_code_cats=[elt[col] for elt in cursor1.fetchall()]
-
-sql = """
-SELECT freecode.id, freecode.name, GROUP_CONCAT(codecat.name)  as categories
-FROM freecode
-	LEFT JOIN treecode
-		ON freecode.id = treecode.cid 
-		LEFT JOIN codecat
-			ON treecode.catid = codecat.catid 
-WHERE freecode.status = 1
-
-GROUP BY freecode.id
-"""
-codes = {}
-cursor1.execute(sql)
-
-the_file = open('nodes.csv','wb')
-nodes = csv.writer(the_file)
-header=['Id','Label']
-header.extend(all_code_cats)
-nodes.writerow (header)
-
-for _id, name, categories in cursor1.fetchall():
-    codes[_id] = [_id, name]
-    the_line = [_id, name]
-    for cat in all_code_cats:
-        # TODO: cat in categories is actually looking for the string
-        if categories and cat in categories:
-            codes[_id].append(1)
-            the_line.append(1)
-        else:
-            codes[_id].append(0)
-            the_line.append(0)
-    nodes.writerow (the_line)
-the_file.close()
-
-
-#######################################
-############ CODING QUERY #############
-#######################################
-# 1 is open, 2 is closed on source.id IN...
-sql = """
-SELECT  coding.fid AS file_id, source.name AS filename, 
-        coding.cid AS code_id, freecode.name AS codename , 
-        coding.selfirst, coding.selend 
-FROM coding, source, freecode 
-WHERE coding.status == 1 
-        AND coding.fid == source.id 
-        AND coding.status == 1
-        AND coding.cid == freecode.id
-        AND freecode.status == 1 
-        AND source.id IN (SELECT fid FROM treefile WHERE catid= """ + str(skill) + """)
-ORDER BY coding.cid """
-
-cursor1.execute(sql)
-cods = cursor1.fetchall()
-
-
-r={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-c={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-d={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-x={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-y={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-z={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-a={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-b={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-e={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-f={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-g={'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
 
 def are_related(relations, a):
     for r in relations:
@@ -160,7 +58,19 @@ def get_header(level):
     return header
 
 
+def generate_nodes():
+    the_file = open('nodes.csv','wb')
+    nodes = csv.writer(the_file)
+    header=['Id','Label']
+    header.extend(all_code_cats)
+    nodes.writerow (header)
+    for the_line in codes:
+        nodes.writerow (codes[the_line])
+    the_file.close()
+
+
 def codings_gephi():
+    generate_nodes()
     level = 2
     the_file = open("edges.csv",'wb')
     edges = csv.writer(the_file)
@@ -183,7 +93,7 @@ def codings_gephi():
                 the_relation.extend(codes[c['cid']])
                 edges.writerow (the_relation)
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 
@@ -204,7 +114,7 @@ def codings2():
                     the_relation.extend(codes[c['cid']])
                     csv_writer.writerow (the_relation)
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 
@@ -228,7 +138,7 @@ def codings3():
                         the_relation.extend(codes[d['cid']])
                         csv_writer.writerow (the_relation)
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 
@@ -254,7 +164,7 @@ def codings4():
                                 the_relation.extend(codes[d['cid']])
                                 the_relation.extend(codes[x['cid']])
                                 csv_writer.writerow (the_relation)
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 def codings5():
@@ -282,7 +192,7 @@ def codings5():
                                         the_relation.extend(codes[x['cid']])
                                         the_relation.extend(codes[y['cid']])
                                         csv_writer.writerow (the_relation)
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 
@@ -315,7 +225,7 @@ def codings6():
                                                 the_relation.extend(codes[z['cid']])
                                                 csv_writer.writerow (the_relation)
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 
@@ -351,7 +261,7 @@ def codings7():
                                                         the_relation.extend(codes[a['cid']])
                                                         csv_writer.writerow (the_relation)
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 def codings8():
@@ -389,7 +299,7 @@ def codings8():
                                                                 the_relation.extend(codes[b['cid']])
                                                                 csv_writer.writerow (the_relation)
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 def codings9():
@@ -431,7 +341,7 @@ def codings9():
                                                                         csv_writer.writerow (the_relation)
 
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 def codings10():
@@ -476,7 +386,7 @@ def codings10():
                                                                                 csv_writer.writerow (the_relation)
 
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ":" + str(counter)
 
 def codings11():
@@ -524,7 +434,7 @@ def codings11():
                                                                                         csv_writer.writerow (the_relation)
 
 
-    the_file.close()    
+    the_file.close()
     print "Total of codings " + str(level) + ": " + str(counter)
 
 
@@ -553,6 +463,3 @@ elif codings == 11:
     codings11()
 else:
     codings_gephi()
-
-
-
