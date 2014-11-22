@@ -1,465 +1,137 @@
-
 import csv
-import sys
-import RQDA
-
-
-r = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-c = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-d = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-x = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-y = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-z = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-a = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-b = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-e = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-f = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-g = {'fid': 0, 'fname': 0, 'cid': 0, 'cname': 0, 'begin': 0, 'end': 0}
-
-# from 1 to 11 or -1 for gephi files
-codings = -1
-# 1 is open, 2 is closed
-file_catid = 1
-
-rqda = RQDA.RQDA("db.rqda")
-all_file_cats = rqda.get_all_file_cats()
-files = rqda.get_files()
-all_code_cats = rqda.get_all_code_cats()
-codes = rqda.get_codes()
-cods = rqda.get_codings(file_catid)
+import CSVGenerator
 
 
 
-def are_related(relations, a):
-    for r in relations:
-        if not is_related(r, a):
-            return False;
-    return True
+# Configuration is a dictionary that contains all the permutations of the
+# resulting data that you want to see
+configurations = [{
+# Possible values for codings
+# -2 for filtered gephi (uses freecode_filtered)
+# -1 for gephi
+# 1 to 11 is going to find all the sets of codes in which n codes appear together
+'codings': -2,
+
+# Names of the file categories in RQDA that will be included in the query.
+# You can select several with the following notation (notice each category is
+# in between single quotes ''):
+#   'file_catnames': "'FILE_CAT1','FILE_CAT2'"
+# You can select all of them by setting
+#   'file_catnames': None
+'file_catnames': "'cat1'",
+
+# Names of the coding categories in RQDA that will be included in the query.
+# You can select several with the following notation (notice each category is
+# in between single quotes ''):
+#   'code_catnames': "'CODE_CAT1','CODE_CAT2'"
+# You can select all of them by setting
+#   'code_catnames': None
+'code_catnames': "'cod_cat1'",
+
+# Names of the coding in RQDA that will be included in the query. You can
+# select several with the following notation (notice each name is in
+# between single quotes ''):
+#   'code_names': "'CODE1','CODE'",
+# You can select all of them by setting
+#   'code_names': None,
+'code_names': "'code1','code2'",
+
+# ONLY HONOURED BY codings = -2
+# Names of the coding categories in RQDA that will be used to filter the query.
+# A relation between any codecat_names will be present if, and only if, of of
+# the filtering codes is also existant. The filtering codes won't appear in the
+# final Gephi table. For example, CODE1 and CODE2 will appear just if FILTER1
+# is present. You can select several with the following notation (notice
+# each name is in between single quotes ''):
+#   'code_filters': "'FILTER1','FILTER2'"
+# You can select all of them by setting
+#   'code_filters': None
+'code_filters': "'filter1'"
+},
+# 2nd configuration
+{
+'codings': -2,
+'file_catnames': "'cat2'",
+'code_catnames': "'cod_cat2'",
+'code_names': "'code1','code2'",
+'code_filters': "'filter1'"
+},
+# 2rd configuration
+{
+'codings': 1,
+'file_catnames': "'cat2'",
+'code_catnames': "'cod_cat2'",
+'code_names': "'code1','code2'",
+'code_filters': None
+}
+]
 
 
-def is_related(c, r):
-    if r['fid'] == c['fid'] and r['cid'] < c['cid']:
-        if r['begin'] <= c['begin'] and c['end'] <= r['end'] or \
-            c['begin'] <= r['begin'] and r['end'] <= c['end'] or \
-            c['begin'] > r['begin'] and c['begin'] <= r['end'] and c['end'] > r['end'] or \
-            c['end'] < r['end'] and c['end'] >= r['begin'] and c['begin'] < r['begin']:
-            return True
-    return False
+# In our case: Emotion, Goals, Imagery, Time, CL_high, CL_low
+
+# IN OUR CASE: effect_helpful, effect_unhelpful, emotion_aggression_adrenaline,
+# emotion_calm_even, emotion_doubt, emotion_excitement, emotion_fear_nerves,
+# emotion_focus_concentrated, emotion_focus_distracted, emotion_frustration,
+# emotion_insecurity, emotion_mood_bad, emotion_mood_good, emotion_motivated,
+# emotion_pain, emotion_pressure, emotion_pride, emotion_satisfaction,
+# emotion_support_recognition, goal_CL1, goal_CL2, goal_CL3, goal_automated,
+# goal_behavior, goal_comparison_others, goal_do_best,
+# goal_experience_improvement, goal_fun, goal_health_fitness, goal_none,
+# goal_outcome, goal_placement_win, goal_psychology, goal_qualifying,
+# goal_self_defense, goal_social_team, goal_timedistance, imagery_abstract,
+# imagery_body_awareness, imagery_concrete, imagery_distant_future,
+# imagery_do_best, imagery_external, imagery_internal, imagery_near_now,
+# imagery_negative, imagery_none, imagery_positive, imagery_selftalk,
+# imagery_tactics, imagery_technique, time_before_competition,
+# time_competition_after_action, time_competition_before_action,
+# time_competition_in_action, time_outside_competition, time_practice
+configurations = [
+    {
+        'codings': -2,
+        'file_catnames': "'Skill_open'",
+        'code_catnames': "'Imagery'",
+        'code_names': "'effect_helpful','effect_unhelpful'",
+        'code_filters': "'time_before_competition'"},
+    {
+        'codings': -2,'file_catnames': "'Skill_closed'",
+        'code_catnames': "'Imagery'",
+        'code_names': "'effect_helpful','effect_unhelpful'",
+        'code_filters': "'time_before_competition'"
+    },
+    ]
 
 
-def get_header(level):
-    header=['filename']
-    header.extend(all_file_cats)
-    for ind in range(level):
-        header.append('id_' + str(ind + 1))
-        header.append('codename_' + str(ind + 1))
-        for el in all_code_cats:
-            header.append(el + str(ind + 1))
-    return header
+def call_generator(generator, codings):
+    if codings == -2:
+        generator.filtered_codings_gephi()
+    elif codings == -1:
+        generator.codings_gephi()
+    elif codings == 1:
+        generator.codings1()
+    elif codings == 2:
+        generator.codings2()
+    elif codings == 3:
+        generator.codings3()
+    elif codings == 4:
+        generator.codings4()
+    elif codings == 5:
+        generator.codings5()
+    elif codings == 6:
+        generator.codings6()
+    elif codings == 7:
+        generator.codings7()
+    elif codings == 8:
+        generator.codings8()
+    elif codings == 9:
+        generator.codings9()
+    elif codings == 10:
+        generator.codings10()
+    elif codings == 11:
+        generator.codings11()
+    else:
+        generator.codings_gephi()
 
-
-def generate_nodes():
-    the_file = open('nodes.csv','wb')
-    nodes = csv.writer(the_file)
-    header=['Id','Label']
-    header.extend(all_code_cats)
-    nodes.writerow (header)
-    for the_line in codes:
-        nodes.writerow (codes[the_line])
-    the_file.close()
-
-
-def codings_gephi():
-    generate_nodes()
-    level = 2
-    the_file = open("edges.csv",'wb')
-    edges = csv.writer(the_file)
-
-    header=['Source','Target','Type', 'filename']
-    header.extend(all_file_cats)
-    for ind in range(level):
-        header.append('id_' + str(ind + 1))
-        header.append('codename_' + str(ind + 1))
-    edges.writerow (header)
-
-    counter = 0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                counter += 1
-                the_relation = [r['cid'], c['cid'], "Undirected",]
-                the_relation.extend(files[r['fid']])
-                the_relation.extend(codes[r['cid']])
-                the_relation.extend(codes[c['cid']])
-                edges.writerow (the_relation)
-
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-
-def codings2():
-    level = 2
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter=0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                    counter+=1
-                    the_relation = []
-                    the_relation.extend(files[r['fid']])
-                    the_relation.extend(codes[r['cid']])
-                    the_relation.extend(codes[c['cid']])
-                    csv_writer.writerow (the_relation)
-
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-
-def codings3():
-    level = 3
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter=0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        counter+=1
-                        the_relation = []
-                        the_relation.extend(files[r['fid']])
-                        the_relation.extend(codes[r['cid']])
-                        the_relation.extend(codes[c['cid']])
-                        the_relation.extend(codes[d['cid']])
-                        csv_writer.writerow (the_relation)
-
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-
-def codings4():
-    level = 4
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter=0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        for x['fid'], x['fname'], x['cid'], x['cname'], x['begin'], x['end'] in cods:
-                            if are_related([c,r,d], x):
-                                counter+=1
-                                the_relation = []
-                                the_relation.extend(files[r['fid']])
-                                the_relation.extend(codes[r['cid']])
-                                the_relation.extend(codes[c['cid']])
-                                the_relation.extend(codes[d['cid']])
-                                the_relation.extend(codes[x['cid']])
-                                csv_writer.writerow (the_relation)
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-def codings5():
-    level = 5
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter=0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        for x['fid'], x['fname'], x['cid'], x['cname'], x['begin'], x['end'] in cods:
-                            if are_related([c,r,d], x):
-                                for y['fid'], y['fname'], y['cid'], y['cname'], y['begin'], y['end'] in cods:
-                                    if are_related([c,r,d,x], y):
-                                        counter+=1
-                                        the_relation = []
-                                        the_relation.extend(files[r['fid']])
-                                        the_relation.extend(codes[r['cid']])
-                                        the_relation.extend(codes[c['cid']])
-                                        the_relation.extend(codes[d['cid']])
-                                        the_relation.extend(codes[x['cid']])
-                                        the_relation.extend(codes[y['cid']])
-                                        csv_writer.writerow (the_relation)
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-
-def codings6():
-    level = 6
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter=0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        for x['fid'], x['fname'], x['cid'], x['cname'], x['begin'], x['end'] in cods:
-                            if are_related([c,r,d], x):
-                                for y['fid'], y['fname'], y['cid'], y['cname'], y['begin'], y['end'] in cods:
-                                    if are_related([c,r,d,x], y):
-                                        for z['fid'], z['fname'], z['cid'], z['cname'], z['begin'], z['end'] in cods:
-                                            if are_related([c,r,d,x,y], z):
-                                                counter+=1
-                                                the_relation = []
-                                                the_relation.extend(files[r['fid']])
-                                                the_relation.extend(codes[r['cid']])
-                                                the_relation.extend(codes[c['cid']])
-                                                the_relation.extend(codes[d['cid']])
-                                                the_relation.extend(codes[x['cid']])
-                                                the_relation.extend(codes[y['cid']])
-                                                the_relation.extend(codes[z['cid']])
-                                                csv_writer.writerow (the_relation)
-
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-
-def codings7():
-    level = 7
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter = 0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        for x['fid'], x['fname'], x['cid'], x['cname'], x['begin'], x['end'] in cods:
-                            if are_related([c,r,d], x):
-                                for y['fid'], y['fname'], y['cid'], y['cname'], y['begin'], y['end'] in cods:
-                                    if are_related([c,r,d,x], y):
-                                        for z['fid'], z['fname'], z['cid'], z['cname'], z['begin'], z['end'] in cods:
-                                            if are_related([c,r,d,x,y], z):
-                                                for a['fid'], a['fname'], a['cid'], a['cname'], a['begin'], a['end'] in cods:
-                                                    if are_related([c,r,d,x,y,z], a):
-                                                        counter+=1
-                                                        the_relation = []
-                                                        the_relation.extend(files[r['fid']])
-                                                        the_relation.extend(codes[r['cid']])
-                                                        the_relation.extend(codes[c['cid']])
-                                                        the_relation.extend(codes[d['cid']])
-                                                        the_relation.extend(codes[x['cid']])
-                                                        the_relation.extend(codes[y['cid']])
-                                                        the_relation.extend(codes[z['cid']])
-                                                        the_relation.extend(codes[a['cid']])
-                                                        csv_writer.writerow (the_relation)
-
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-def codings8():
-    level = 8
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter = 0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        for x['fid'], x['fname'], x['cid'], x['cname'], x['begin'], x['end'] in cods:
-                            if are_related([c,r,d], x):
-                                for y['fid'], y['fname'], y['cid'], y['cname'], y['begin'], y['end'] in cods:
-                                    if are_related([c,r,d,x], y):
-                                        for z['fid'], z['fname'], z['cid'], z['cname'], z['begin'], z['end'] in cods:
-                                            if are_related([c,r,d,x,y], z):
-                                                for a['fid'], a['fname'], a['cid'], a['cname'], a['begin'], a['end'] in cods:
-                                                    if are_related([c,r,d,x,y,z], a):
-                                                        for b['fid'], b['fname'], b['cid'], b['cname'], b['begin'], b['end'] in cods:
-                                                            if are_related([c,r,d,x,y,z,a], b):
-                                                                counter+=1
-                                                                the_relation = []
-                                                                the_relation.extend(files[r['fid']])
-                                                                the_relation.extend(codes[r['cid']])
-                                                                the_relation.extend(codes[c['cid']])
-                                                                the_relation.extend(codes[d['cid']])
-                                                                the_relation.extend(codes[x['cid']])
-                                                                the_relation.extend(codes[y['cid']])
-                                                                the_relation.extend(codes[z['cid']])
-                                                                the_relation.extend(codes[a['cid']])
-                                                                the_relation.extend(codes[b['cid']])
-                                                                csv_writer.writerow (the_relation)
-
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-def codings9():
-    level = 9
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter = 0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        for x['fid'], x['fname'], x['cid'], x['cname'], x['begin'], x['end'] in cods:
-                            if are_related([c,r,d], x):
-                                for y['fid'], y['fname'], y['cid'], y['cname'], y['begin'], y['end'] in cods:
-                                    if are_related([c,r,d,x], y):
-                                        for z['fid'], z['fname'], z['cid'], z['cname'], z['begin'], z['end'] in cods:
-                                            if are_related([c,r,d,x,y], z):
-                                                for a['fid'], a['fname'], a['cid'], a['cname'], a['begin'], a['end'] in cods:
-                                                    if are_related([c,r,d,x,y,z], a):
-                                                        for b['fid'], b['fname'], b['cid'], b['cname'], b['begin'], b['end'] in cods:
-                                                            if are_related([c,r,d,x,y,z,a], b):
-                                                                for e['fid'], e['fname'], e['cid'], e['cname'], e['begin'], e['end'] in cods:
-                                                                    if are_related([c,r,d,x,y,z,a,b], e):
-                                                                        counter+=1
-                                                                        the_relation = []
-                                                                        the_relation.extend(files[r['fid']])
-                                                                        the_relation.extend(codes[r['cid']])
-                                                                        the_relation.extend(codes[c['cid']])
-                                                                        the_relation.extend(codes[d['cid']])
-                                                                        the_relation.extend(codes[x['cid']])
-                                                                        the_relation.extend(codes[y['cid']])
-                                                                        the_relation.extend(codes[z['cid']])
-                                                                        the_relation.extend(codes[a['cid']])
-                                                                        the_relation.extend(codes[b['cid']])
-                                                                        the_relation.extend(codes[e['cid']])
-                                                                        csv_writer.writerow (the_relation)
-
-
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-def codings10():
-    level = 10
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter = 0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        for x['fid'], x['fname'], x['cid'], x['cname'], x['begin'], x['end'] in cods:
-                            if are_related([c,r,d], x):
-                                for y['fid'], y['fname'], y['cid'], y['cname'], y['begin'], y['end'] in cods:
-                                    if are_related([c,r,d,x], y):
-                                        for z['fid'], z['fname'], z['cid'], z['cname'], z['begin'], z['end'] in cods:
-                                            if are_related([c,r,d,x,y], z):
-                                                for a['fid'], a['fname'], a['cid'], a['cname'], a['begin'], a['end'] in cods:
-                                                    if are_related([c,r,d,x,y,z], a):
-                                                        for b['fid'], b['fname'], b['cid'], b['cname'], b['begin'], b['end'] in cods:
-                                                            if are_related([c,r,d,x,y,z,a], b):
-                                                                for e['fid'], e['fname'], e['cid'], e['cname'], e['begin'], e['end'] in cods:
-                                                                    if are_related([c,r,d,x,y,z,a,b], e):
-                                                                        for f['fid'], f['fname'], f['cid'], f['cname'], f['begin'], f['end'] in cods:
-                                                                            if are_related([c,r,d,x,y,z,a,b,e], f):
-                                                                                counter+=1
-                                                                                the_relation = []
-                                                                                the_relation.extend(files[r['fid']])
-                                                                                the_relation.extend(codes[r['cid']])
-                                                                                the_relation.extend(codes[c['cid']])
-                                                                                the_relation.extend(codes[d['cid']])
-                                                                                the_relation.extend(codes[x['cid']])
-                                                                                the_relation.extend(codes[y['cid']])
-                                                                                the_relation.extend(codes[z['cid']])
-                                                                                the_relation.extend(codes[a['cid']])
-                                                                                the_relation.extend(codes[b['cid']])
-                                                                                the_relation.extend(codes[e['cid']])
-                                                                                the_relation.extend(codes[f['cid']])
-                                                                                csv_writer.writerow (the_relation)
-
-
-    the_file.close()
-    print "Total of codings " + str(level) + ":" + str(counter)
-
-def codings11():
-    level = 11
-    the_file = open("codings" + str(level) + ".csv",'wb')
-    csv_writer = csv.writer(the_file)
-    csv_writer.writerow (get_header(level))
-
-    counter = 0
-    for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in cods:
-        for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in cods:
-            if are_related([c],r):
-                for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in cods:
-                    if are_related([c,r], d):
-                        for x['fid'], x['fname'], x['cid'], x['cname'], x['begin'], x['end'] in cods:
-                            if are_related([c,r,d], x):
-                                for y['fid'], y['fname'], y['cid'], y['cname'], y['begin'], y['end'] in cods:
-                                    if are_related([c,r,d,x], y):
-                                        for z['fid'], z['fname'], z['cid'], z['cname'], z['begin'], z['end'] in cods:
-                                            if are_related([c,r,d,x,y], z):
-                                                for a['fid'], a['fname'], a['cid'], a['cname'], a['begin'], a['end'] in cods:
-                                                    if are_related([c,r,d,x,y,z], a):
-                                                        for b['fid'], b['fname'], b['cid'], b['cname'], b['begin'], b['end'] in cods:
-                                                            if are_related([c,r,d,x,y,z,a], b):
-                                                                for e['fid'], e['fname'], e['cid'], e['cname'], e['begin'], e['end'] in cods:
-                                                                    if are_related([c,r,d,x,y,z,a,b], e):
-                                                                        for f['fid'], f['fname'], f['cid'], f['cname'], f['begin'], f['end'] in cods:
-                                                                            if are_related([c,r,d,x,y,z,a,b,e], f):
-                                                                                for g['fid'], g['fname'], g['cid'], g['cname'], g['begin'], g['end'] in cods:
-                                                                                    if are_related([c,r,d,x,y,z,a,b,e,f], g):
-                                                                                        counter+=1
-                                                                                        the_relation = []
-                                                                                        the_relation.extend(files[r['fid']])
-                                                                                        the_relation.extend(codes[r['cid']])
-                                                                                        the_relation.extend(codes[c['cid']])
-                                                                                        the_relation.extend(codes[d['cid']])
-                                                                                        the_relation.extend(codes[x['cid']])
-                                                                                        the_relation.extend(codes[y['cid']])
-                                                                                        the_relation.extend(codes[z['cid']])
-                                                                                        the_relation.extend(codes[a['cid']])
-                                                                                        the_relation.extend(codes[b['cid']])
-                                                                                        the_relation.extend(codes[e['cid']])
-                                                                                        the_relation.extend(codes[f['cid']])
-                                                                                        the_relation.extend(codes[g['cid']])
-                                                                                        csv_writer.writerow (the_relation)
-
-
-    the_file.close()
-    print "Total of codings " + str(level) + ": " + str(counter)
-
-
-
-if codings == 1:
-    codings1()
-elif codings == 2:
-    codings2()
-elif codings == 3:
-    codings3()
-elif codings == 4:
-    codings4()
-elif codings == 5:
-    codings5()
-elif codings == 6:
-    codings6()
-elif codings == 7:
-    codings7()
-elif codings == 8:
-    codings8()
-elif codings == 9:
-    codings9()
-elif codings == 10:
-    codings10()
-elif codings == 11:
-    codings11()
-else:
-    codings_gephi()
+for conf in configurations:
+    generator = CSVGenerator.CSVGenerator(conf['file_catnames'],
+        conf['code_catnames'], conf['code_names'], conf['code_filters'])
+    call_generator(generator, conf['codings'])

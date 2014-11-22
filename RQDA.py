@@ -1,5 +1,4 @@
 import sqlite3
-import csv
 
 class RQDA():
     """ An RQDA object that self.connects to an RQDA database """
@@ -79,8 +78,6 @@ class RQDA():
     def get_codes(self):
         """ Get all codes """
 
-
-
         sql = """
         SELECT freecode.id, freecode.name, GROUP_CONCAT(codecat.name)  as categories
         FROM freecode
@@ -108,19 +105,36 @@ class RQDA():
 
 
 
-
-    #######################################
-    ############ CODING QUERY #############
-    #######################################
-    # 1 is open, 2 is closed on source.id IN...
-
-    def get_codings(self, file_catid):
+    def get_codings(self, file_catnames, freecode_names, codecat_names):
         """ get all the actual codings """
 
         where_file = "1"
-        if file_catid:
-            where_file = """catid= """ + str(file_catid)
+        if file_catnames:
+            where_file = """filecat.name IN (""" + file_catnames + """)"""
 
+
+        if codecat_names:
+            sql = """
+            SELECT GROUP_CONCAT(freecode.name,"','") as names
+            FROM freecode
+                LEFT JOIN treecode
+                    ON freecode.id = treecode.cid
+                    LEFT JOIN codecat
+                        ON treecode.catid = codecat.catid
+            WHERE freecode.status = 1  AND codecat.name IN (""" + codecat_names + """)
+            """
+            self.cursor1.execute(sql)
+            fetched = self.cursor1.fetchall()
+            if len(fetched) > 0:
+                names = fetched[0][0]
+                if freecode_names:
+                    freecode_names = freecode_names + ", '" + names + "'"
+                else:
+                    freecode_names = "'" + names + "'"
+
+        where_freecode = ""
+        if freecode_names:
+            where_freecode = " AND freecode.name IN (" + freecode_names + ")"
 
         sql = """
         SELECT  coding.fid AS file_id, source.name AS filename,
@@ -131,9 +145,15 @@ class RQDA():
                 AND coding.fid == source.id
                 AND coding.status == 1
                 AND coding.cid == freecode.id
+                """ + where_freecode + """
                 AND freecode.status == 1
-                AND source.id IN (SELECT fid FROM treefile WHERE """ + where_file + """ )
+                AND source.id IN (
+                    SELECT treefile.fid
+                    FROM treefile
+                        LEFT JOIN filecat
+                        ON treefile.catid = filecat.catid
+                    WHERE """ + where_file + """ )
         ORDER BY coding.cid """
-
+        
         self.cursor1.execute(sql)
         return self.cursor1.fetchall()
