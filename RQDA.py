@@ -75,18 +75,19 @@ class RQDA():
             return self.all_code_cats
 
 
-    def get_codes(self):
+    def get_codes(self, freecode_names, codecat_names):
         """ Get all codes """
+        where_freecode = self.get_where_freecode(freecode_names, codecat_names)
 
         sql = """
-        SELECT freecode.id, freecode.name, GROUP_CONCAT(codecat.name)  as categories
+        SELECT freecode.id, freecode.name, GROUP_CONCAT(codecat.name) as categories
         FROM freecode
             LEFT JOIN treecode
                 ON freecode.id = treecode.cid
                 LEFT JOIN codecat
                     ON treecode.catid = codecat.catid
-        WHERE freecode.status = 1
-
+        WHERE freecode.status = 1 AND treecode.status = 1 AND codecat.status = 1
+            """ + where_freecode + """
         GROUP BY freecode.id
         """
         codes = {}
@@ -94,7 +95,7 @@ class RQDA():
 
         all_code_cats = self.get_all_code_cats()
         for _id, name, categories in self.cursor1.fetchall():
-            codes[_id] = [_id, name]
+            codes[_id] = [_id, name, categories]
             for cat in all_code_cats:
                 # TODO: cat in categories is actually looking for the string
                 if categories and cat in categories:
@@ -112,7 +113,32 @@ class RQDA():
         if file_catnames:
             where_file = """filecat.name IN (""" + file_catnames + """)"""
 
+        where_freecode = self.get_where_freecode(freecode_names, codecat_names)
 
+        sql = """
+        SELECT  coding.fid AS file_id, source.name AS filename,
+                coding.cid AS code_id, freecode.name AS codename ,
+                coding.selfirst, coding.selend
+        FROM coding, source, freecode
+        WHERE coding.status == 1
+                AND coding.fid == source.id
+                AND coding.status == 1
+                AND coding.cid == freecode.id
+                """ + where_freecode + """
+                AND freecode.status == 1
+                AND source.id IN (
+                    SELECT treefile.fid
+                    FROM treefile
+                        LEFT JOIN filecat
+                        ON treefile.catid = filecat.catid
+                    WHERE """ + where_file + """ )
+        ORDER BY coding.cid """
+
+        self.cursor1.execute(sql)
+        return self.cursor1.fetchall()
+
+
+    def get_where_freecode(self, freecode_names, codecat_names):
         if codecat_names:
             sql = """
             SELECT GROUP_CONCAT(freecode.name,"','") as names
@@ -136,24 +162,4 @@ class RQDA():
         if freecode_names:
             where_freecode = " AND freecode.name IN (" + freecode_names + ")"
 
-        sql = """
-        SELECT  coding.fid AS file_id, source.name AS filename,
-                coding.cid AS code_id, freecode.name AS codename ,
-                coding.selfirst, coding.selend
-        FROM coding, source, freecode
-        WHERE coding.status == 1
-                AND coding.fid == source.id
-                AND coding.status == 1
-                AND coding.cid == freecode.id
-                """ + where_freecode + """
-                AND freecode.status == 1
-                AND source.id IN (
-                    SELECT treefile.fid
-                    FROM treefile
-                        LEFT JOIN filecat
-                        ON treefile.catid = filecat.catid
-                    WHERE """ + where_file + """ )
-        ORDER BY coding.cid """
-        
-        self.cursor1.execute(sql)
-        return self.cursor1.fetchall()
+        return where_freecode

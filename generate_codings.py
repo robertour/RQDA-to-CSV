@@ -66,10 +66,13 @@ configurations = [{
 }
 ]
 
+# FILE CATEGORIES: Skill_open, Skill_closed, Person_HC, Person_LC, Sex_Male,
+# Sex_Female, Job_LC, Job_HL, Age_under25, Age_over25
 
-# In our case: Emotion, Goals, Imagery, Time, CL_high, CL_low
 
-# IN OUR CASE: effect_helpful, effect_unhelpful, emotion_aggression_adrenaline,
+# CODE CATEGORIES: Emotion, Goals, Imagery, Time, CL_high, CL_low
+
+# CODE NAMES: effect_helpful, effect_unhelpful, emotion_aggression_adrenaline,
 # emotion_calm_even, emotion_doubt, emotion_excitement, emotion_fear_nerves,
 # emotion_focus_concentrated, emotion_focus_distracted, emotion_frustration,
 # emotion_insecurity, emotion_mood_bad, emotion_mood_good, emotion_motivated,
@@ -86,19 +89,117 @@ configurations = [{
 # time_competition_after_action, time_competition_before_action,
 # time_competition_in_action, time_outside_competition, time_practice
 configurations = [
-    {
-        'codings': -2,
-        'file_catnames': "'Skill_open'",
-        'code_catnames': "'Imagery'",
-        'code_names': "'effect_helpful','effect_unhelpful'",
-        'code_filters': "'time_before_competition'"},
-    {
-        'codings': -2,'file_catnames': "'Skill_closed'",
-        'code_catnames': "'Imagery'",
-        'code_names': "'effect_helpful','effect_unhelpful'",
-        'code_filters': "'time_before_competition'"
-    },
-    ]
+{
+    'codings': -2,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Imagery','CL_imagery','Effect'",
+    'code_names': None,
+    'code_filters': "'time_before_competition'"},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Imagery','CL_imagery','Effect'",
+    'code_names': None,
+    'code_filters': "'time_competition_before_action'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Imagery','CL_imagery','Effect'",
+    'code_names': None,
+    'code_filters': "'time_competition_in_action'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Imagery','CL_imagery','Effect'",
+    'code_names': None,
+    'code_filters': "'time_practice'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Imagery','CL_imagery','Effect'",
+    'code_names': None,
+    'code_filters': "'time_before_competition'"},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Imagery','CL_imagery','Effect'",
+    'code_names': None,
+    'code_filters': "'time_competition_before_action'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Imagery','CL_imagery','Effect'",
+    'code_names': None,
+    'code_filters': "'time_competition_in_action'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Imagery','CL_imagery','Effect'",
+    'code_names': None,
+    'code_filters': "'time_practice'"
+},
+
+
+{
+    'codings': -2,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Goals','CL_goal','Effect'",
+    'code_names': None,
+    'code_filters': "'time_before_competition'"},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Goals','CL_goal','Effect'",
+    'code_names': None,
+    'code_filters': "'time_competition_before_action'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Goals','CL_goal','Effect'",
+    'code_names': None,
+    'code_filters': "'time_competition_in_action'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Goals','CL_goal','Effect'",
+    'code_names': None,
+    'code_filters': "'time_practice'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','CL_goal','Effect'",
+    'code_names': None,
+    'code_filters': "'time_before_competition'"},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','CL_goal','Effect'",
+    'code_names': None,
+    'code_filters': "'time_competition_before_action'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','CL_goal','Effect'",
+    'code_names': None,
+    'code_filters': "'time_competition_in_action'"
+},
+{
+    'codings': -2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','CL_goal','Effect'",
+    'code_names': None,
+    'code_filters': "'time_practice'"
+},
+]
 
 
 def call_generator(generator, codings):

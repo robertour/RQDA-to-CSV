@@ -26,12 +26,23 @@ class CSVGenerator:
         self.all_file_cats = rqda.get_all_file_cats()
         self.files = rqda.get_files()
         self.all_code_cats = rqda.get_all_code_cats()
-        self.codes = rqda.get_codes()
+
+        code_names_all = code_names
+        if code_filters:
+            if code_names_all:
+                code_names_all = code_names + "," + code_filters
+            else:
+                code_names_all = code_filters
+
+        self.node_codes = rqda.get_codes(code_names, code_catnames)
+        self.codes = rqda.get_codes(code_names_all, code_catnames)
         self.cods = rqda.get_codings(file_catnames, code_names, code_catnames)
         self.filters = rqda.get_codings(file_catnames, code_filters, None)
 
-        self.directory = (file_catnames + " - " + code_filters + " - " + \
-                    code_catnames + " - " + code_names).replace("'", "")
+        xstr = lambda s: s or ""
+        self.directory = (xstr(file_catnames) + " - " + xstr(code_filters) + \
+            " - " + xstr(code_catnames) + " - " +\
+            xstr(code_names)).replace("'", "")
 
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
@@ -53,6 +64,20 @@ class CSVGenerator:
                 return True
         return False
 
+    def are_related_full(self, relations, a):
+        for r in relations:
+            if not self.is_related_full(r, a):
+                return False;
+        return True
+
+    def is_related_full(self, c, r):
+        if r['fid'] == c['fid']:
+            if r['begin'] <= c['begin'] and c['end'] <= r['end'] or \
+                c['begin'] <= r['begin'] and r['end'] <= c['end'] or \
+                c['begin'] > r['begin'] and c['begin'] <= r['end'] and c['end'] > r['end'] or \
+                c['end'] < r['end'] and c['end'] >= r['begin'] and c['begin'] < r['begin']:
+                return True
+        return False
 
     def get_header(self, level):
         header=['filename']
@@ -60,6 +85,7 @@ class CSVGenerator:
         for ind in range(level):
             header.append('id_' + str(ind + 1))
             header.append('codename_' + str(ind + 1))
+            header.append('categories_' + str(ind + 1))
             for el in self.all_code_cats:
                 header.append(el + str(ind + 1))
         return header
@@ -68,16 +94,16 @@ class CSVGenerator:
     def generate_nodes(self):
         the_file = open( self.directory + '/nodes.csv','wb')
         nodes = csv.writer(the_file)
-        header=['Id','Label']
+        header=['Id','Label','Categories']
         header.extend(self.all_code_cats)
         nodes.writerow (header)
-        for the_line in self.codes:
+        for the_line in self.node_codes:
             nodes.writerow (self.codes[the_line])
         the_file.close()
 
 
     def codings_gephi(self):
-        generate_nodes()
+        self.generate_nodes()
         level = 2
         the_file = open( self.directory + "/edges.csv",'wb')
         edges = csv.writer(the_file)
@@ -87,6 +113,9 @@ class CSVGenerator:
         for ind in range(level):
             header.append('id_' + str(ind + 1))
             header.append('codename_' + str(ind + 1))
+            header.append('categories_' + str(ind + 1))
+            for el in self.all_code_cats:
+                header.append(el + str(ind + 1))
         edges.writerow (header)
 
         counter = 0
@@ -101,7 +130,7 @@ class CSVGenerator:
                     edges.writerow (the_relation)
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
 
     def filtered_codings_gephi(self):
@@ -115,6 +144,9 @@ class CSVGenerator:
         for ind in range(level):
             header.append('id_' + str(ind + 1))
             header.append('codename_' + str(ind + 1))
+            header.append('categories_' + str(ind + 1))
+            for el in self.all_code_cats:
+                header.append(el + str(ind + 1))
         edges.writerow (header)
 
         counter=0
@@ -122,7 +154,7 @@ class CSVGenerator:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
                 if self.are_related([c],r):
                     for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in self.filters:
-                        if self.are_related([c,r], d):
+                        if self.are_related_full([c,r], d):
                             counter+=1
                             the_relation = [r['cid'], c['cid'], "Undirected",]
                             the_relation.extend(self.files[r['fid']])
@@ -132,7 +164,7 @@ class CSVGenerator:
                             edges.writerow (the_relation)
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
 
     def codings2(self):
@@ -153,7 +185,7 @@ class CSVGenerator:
                         csv_writer.writerow (the_relation)
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
 
     def codings3(self):
@@ -167,7 +199,7 @@ class CSVGenerator:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
                 if self.are_related([c],r):
                     for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in self.cods:
-                        if self.are_related([c,r], d):
+                        if self.are_related([c,r], r):
                             counter+=1
                             the_relation = []
                             the_relation.extend(self.files[r['fid']])
@@ -177,7 +209,7 @@ class CSVGenerator:
                             csv_writer.writerow (the_relation)
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
 
     def codings4(self):
@@ -203,7 +235,7 @@ class CSVGenerator:
                                     the_relation.extend(self.codes[x['cid']])
                                     csv_writer.writerow (the_relation)
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
     def codings5(self):
         level = 5
@@ -231,7 +263,7 @@ class CSVGenerator:
                                             the_relation.extend(self.codes[y['cid']])
                                             csv_writer.writerow (the_relation)
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
 
     def codings6(self):
@@ -264,7 +296,7 @@ class CSVGenerator:
                                                     csv_writer.writerow (the_relation)
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
 
     def codings7(self):
@@ -300,7 +332,7 @@ class CSVGenerator:
                                                             csv_writer.writerow (the_relation)
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
     def codings8(self):
         level = 8
@@ -338,7 +370,7 @@ class CSVGenerator:
                                                                     csv_writer.writerow (the_relation)
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
     def codings9(self):
         level = 9
@@ -380,7 +412,7 @@ class CSVGenerator:
 
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
     def codings10(self):
         level = 10
@@ -472,4 +504,4 @@ class CSVGenerator:
                                                                                             csv_writer.writerow (the_relation)
 
         the_file.close()
-        print "Total of codings " + str(level) + ": " + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
