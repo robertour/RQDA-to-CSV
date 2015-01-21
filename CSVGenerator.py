@@ -20,7 +20,7 @@ class CSVGenerator:
     """ Generate different CSVs according to different criterias. Some for Gephi """
 
 
-    def __init__(self, file_catnames, code_catnames, code_names, code_filters):
+    def __init__(self, codings, file_catnames, code_catnames, code_names, code_filters):
 
         rqda = RQDA.RQDA("db.rqda")
         self.all_file_cats = rqda.get_all_file_cats()
@@ -40,8 +40,8 @@ class CSVGenerator:
         self.filters = rqda.get_codings(file_catnames, code_filters, None)
 
         xstr = lambda s: s or ""
-        self.directory = (xstr(file_catnames) + " - " + xstr(code_filters) + \
-            " - " + xstr(code_catnames) + " - " +\
+        self.directory = (str(codings) + " - " + xstr(file_catnames) + " - " +
+            xstr(code_filters) + " - " + xstr(code_catnames) + " - " +\
             xstr(code_names)).replace("'", "")
 
         if not os.path.exists(self.directory):
@@ -88,6 +88,7 @@ class CSVGenerator:
             header.append('categories_' + str(ind + 1))
             for el in self.all_code_cats:
                 header.append(el + str(ind + 1))
+        header.append('codes')
         return header
 
 
@@ -182,6 +183,7 @@ class CSVGenerator:
                         the_relation.extend(self.files[r['fid']])
                         the_relation.extend(self.codes[r['cid']])
                         the_relation.extend(self.codes[c['cid']])
+                        the_relation.append(r['cname'] + "-" + c['cname'])
                         csv_writer.writerow (the_relation)
 
         the_file.close()
@@ -199,13 +201,14 @@ class CSVGenerator:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
                 if self.are_related([c],r):
                     for d['fid'], d['fname'], d['cid'], d['cname'], d['begin'], d['end'] in self.cods:
-                        if self.are_related([c,r], r):
+                        if self.are_related([c,r], d):
                             counter+=1
                             the_relation = []
                             the_relation.extend(self.files[r['fid']])
                             the_relation.extend(self.codes[r['cid']])
                             the_relation.extend(self.codes[c['cid']])
                             the_relation.extend(self.codes[d['cid']])
+                            the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'])
                             csv_writer.writerow (the_relation)
 
         the_file.close()
@@ -233,6 +236,7 @@ class CSVGenerator:
                                     the_relation.extend(self.codes[c['cid']])
                                     the_relation.extend(self.codes[d['cid']])
                                     the_relation.extend(self.codes[x['cid']])
+                                    the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" + x['cname'])
                                     csv_writer.writerow (the_relation)
         the_file.close()
         print self.directory  + "(level = " + str(level) + "): " + str(counter)
@@ -261,6 +265,7 @@ class CSVGenerator:
                                             the_relation.extend(self.codes[d['cid']])
                                             the_relation.extend(self.codes[x['cid']])
                                             the_relation.extend(self.codes[y['cid']])
+                                            the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" + x['cname'] + "-" + y['cname'])
                                             csv_writer.writerow (the_relation)
         the_file.close()
         print self.directory  + "(level = " + str(level) + "): " + str(counter)
@@ -293,6 +298,7 @@ class CSVGenerator:
                                                     the_relation.extend(self.codes[x['cid']])
                                                     the_relation.extend(self.codes[y['cid']])
                                                     the_relation.extend(self.codes[z['cid']])
+                                                    the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" + x['cname'] + "-" + y['cname'] + "-" + z['cname'])
                                                     csv_writer.writerow (the_relation)
 
         the_file.close()
@@ -329,6 +335,7 @@ class CSVGenerator:
                                                             the_relation.extend(self.codes[y['cid']])
                                                             the_relation.extend(self.codes[z['cid']])
                                                             the_relation.extend(self.codes[a['cid']])
+                                                            the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" + x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'])
                                                             csv_writer.writerow (the_relation)
 
         the_file.close()
@@ -367,6 +374,9 @@ class CSVGenerator:
                                                                     the_relation.extend(self.codes[z['cid']])
                                                                     the_relation.extend(self.codes[a['cid']])
                                                                     the_relation.extend(self.codes[b['cid']])
+                                                                    the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" +
+                                                                        x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'] + "-" +
+                                                                        b['cname'])
                                                                     csv_writer.writerow (the_relation)
 
         the_file.close()
@@ -408,6 +418,9 @@ class CSVGenerator:
                                                                             the_relation.extend(self.codes[a['cid']])
                                                                             the_relation.extend(self.codes[b['cid']])
                                                                             the_relation.extend(self.codes[e['cid']])
+                                                                            the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" +
+                                                                                x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'] + "-" +
+                                                                                b['cname'] + "-" + e['cname'])
                                                                             csv_writer.writerow (the_relation)
 
 
@@ -453,11 +466,14 @@ class CSVGenerator:
                                                                                     the_relation.extend(self.codes[b['cid']])
                                                                                     the_relation.extend(self.codes[e['cid']])
                                                                                     the_relation.extend(self.codes[f['cid']])
+                                                                                    the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" +
+                                                                                        x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'] + "-" +
+                                                                                        b['cname'] + "-" + e['cname'] + "-" + f['cname'])
                                                                                     csv_writer.writerow (the_relation)
 
 
         the_file.close()
-        print "Total of codings " + str(level) + ":" + str(counter)
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
     def codings11(self):
         level = 11
@@ -501,6 +517,9 @@ class CSVGenerator:
                                                                                             the_relation.extend(self.codes[e['cid']])
                                                                                             the_relation.extend(self.codes[f['cid']])
                                                                                             the_relation.extend(self.codes[g['cid']])
+                                                                                            the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" +
+                                                                                                x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'] + "-" +
+                                                                                                b['cname'] + "-" + e['cname'] + "-" + f['cname'] + "-" + g['cname'])
                                                                                             csv_writer.writerow (the_relation)
 
         the_file.close()
