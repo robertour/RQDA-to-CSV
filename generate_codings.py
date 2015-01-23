@@ -401,35 +401,13 @@ configurations = [
 ]
 
 
-configurations = [
-    {
-    'codings': 1,
-    'file_catnames': "'Skill_open'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-    {
-    'codings': 1,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-    {
-    'codings': 1,
-    'file_catnames': "'Skill_open','Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-
-]
-
 
 def call_generator(generator, codings):
     if codings == -2:
         generator.filtered_codings_gephi()
     elif codings == -1:
         generator.codings_gephi()
-    elif codings >= 1 && codings <= 11:
+    elif codings >= 1 and codings <= 11:
         generator.codings(codings)
     else:
         generator.codings_gephi()
