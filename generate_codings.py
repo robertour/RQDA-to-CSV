@@ -201,6 +201,12 @@ configurations = [
 
 configurations = [
 {
+    'codings': 1,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
     'codings': 2,
     'file_catnames': "'Skill_open'",
     'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
@@ -257,66 +263,78 @@ configurations = [
 {
     'codings': 11,
     'file_catnames': "'Skill_open'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 1,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 2,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 3,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 4,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 5,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 6,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 7,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 8,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 9,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 10,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+{
+    'codings': 11,
+    'file_catnames': "'Skill_closed'",
     'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
     'code_names': None,
     'code_filters': None },
     {
-    'codings': 2,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 3,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 4,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 5,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 6,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 7,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 8,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 9,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 10,
-    'file_catnames': "'Skill_closed'",
-    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
-    'code_names': None,
-    'code_filters': None },
-{
-    'codings': 11,
-    'file_catnames': "'Skill_closed'",
+    'codings': 1,
+    'file_catnames': "'Skill_open','Skill_closed'",
     'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
     'code_names': None,
     'code_filters': None },
@@ -383,33 +401,36 @@ configurations = [
 ]
 
 
+configurations = [
+    {
+    'codings': 1,
+    'file_catnames': "'Skill_open'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+    {
+    'codings': 1,
+    'file_catnames': "'Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+    {
+    'codings': 1,
+    'file_catnames': "'Skill_open','Skill_closed'",
+    'code_catnames': "'Goals','Emotion','Effect','Imagery','Time'",
+    'code_names': None,
+    'code_filters': None },
+
+]
+
+
 def call_generator(generator, codings):
     if codings == -2:
         generator.filtered_codings_gephi()
     elif codings == -1:
         generator.codings_gephi()
-    elif codings == 1:
-        generator.codings1()
-    elif codings == 2:
-        generator.codings2()
-    elif codings == 3:
-        generator.codings3()
-    elif codings == 4:
-        generator.codings4()
-    elif codings == 5:
-        generator.codings5()
-    elif codings == 6:
-        generator.codings6()
-    elif codings == 7:
-        generator.codings7()
-    elif codings == 8:
-        generator.codings8()
-    elif codings == 9:
-        generator.codings9()
-    elif codings == 10:
-        generator.codings10()
-    elif codings == 11:
-        generator.codings11()
+    elif codings >= 1 && codings <= 11:
+        generator.codings(codings)
     else:
         generator.codings_gephi()
 

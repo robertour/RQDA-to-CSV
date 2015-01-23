@@ -167,13 +167,54 @@ class CSVGenerator:
         the_file.close()
         print self.directory  + "(level = " + str(level) + "): " + str(counter)
 
+    def codings(self, level):
 
-    def codings2(self):
-        level = 2
         the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
         csv_writer = csv.writer(the_file)
         csv_writer.writerow (self.get_header(level))
 
+        counter = 0
+
+        if level == 1:
+            counter = self.codings1(csv_writer)
+        elif level == 2:
+            counter = self.codings2(csv_writer)
+        elif level == 3:
+            counter = self.codings3(csv_writer)
+        elif level == 4:
+            counter = self.codings4(csv_writer)
+        elif level == 5:
+            counter = self.codings5(csv_writer)
+        elif level == 6:
+            counter = self.codings6(csv_writer)
+        elif level == 7:
+            counter = self.codings7(csv_writer)
+        elif level == 8:
+            counter = self.codings8(csv_writer)
+        elif level == 9:
+            counter = self.codings9(csv_writer)
+        elif level == 10:
+            counter = self.codings10(csv_writer)
+        elif level == 11:
+            counter = self.codings11(csv_writer)
+
+        the_file.close()
+        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+
+
+    def codings1(self, csv_writer):
+        counter=0
+        for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
+            counter+=1
+            the_relation = []
+            the_relation.extend(self.files[r['fid']])
+            the_relation.extend(self.codes[r['cid']])
+            the_relation.append(r['cname'])
+            csv_writer.writerow (the_relation)
+        return counter
+
+
+    def codings2(self, csv_writer):
         counter=0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -185,17 +226,11 @@ class CSVGenerator:
                         the_relation.extend(self.codes[c['cid']])
                         the_relation.append(r['cname'] + "-" + c['cname'])
                         csv_writer.writerow (the_relation)
-
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        return counter
 
 
-    def codings3(self):
-        level = 3
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
 
+    def codings3(self, csv_writer):
         counter=0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -210,17 +245,10 @@ class CSVGenerator:
                             the_relation.extend(self.codes[d['cid']])
                             the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'])
                             csv_writer.writerow (the_relation)
-
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        return counter
 
 
-    def codings4(self):
-        level = 4
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
-
+    def codings4(self, csv_writer):
         counter=0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -238,15 +266,9 @@ class CSVGenerator:
                                     the_relation.extend(self.codes[x['cid']])
                                     the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" + x['cname'])
                                     csv_writer.writerow (the_relation)
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        return counter
 
-    def codings5(self):
-        level = 5
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
-
+    def codings5(self, csv_writer):
         counter=0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -267,16 +289,10 @@ class CSVGenerator:
                                             the_relation.extend(self.codes[y['cid']])
                                             the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" + x['cname'] + "-" + y['cname'])
                                             csv_writer.writerow (the_relation)
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        return counter
 
 
-    def codings6(self):
-        level = 6
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
-
+    def codings6(self, csv_writer):
         counter=0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -300,17 +316,10 @@ class CSVGenerator:
                                                     the_relation.extend(self.codes[z['cid']])
                                                     the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" + x['cname'] + "-" + y['cname'] + "-" + z['cname'])
                                                     csv_writer.writerow (the_relation)
-
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        return counter
 
 
-    def codings7(self):
-        level = 7
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
-
+    def codings7(self, csv_writer):
         counter = 0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -337,16 +346,9 @@ class CSVGenerator:
                                                             the_relation.extend(self.codes[a['cid']])
                                                             the_relation.append(r['cname'] + "-" + c['cname'] + "-" + d['cname'] + "-" + x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'])
                                                             csv_writer.writerow (the_relation)
+        return counter
 
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
-
-    def codings8(self):
-        level = 8
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
-
+    def codings8(self, csv_writer):
         counter = 0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -378,16 +380,9 @@ class CSVGenerator:
                                                                         x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'] + "-" +
                                                                         b['cname'])
                                                                     csv_writer.writerow (the_relation)
+        return counter
 
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
-
-    def codings9(self):
-        level = 9
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
-
+    def codings9(self, csv_writer):
         counter = 0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -422,17 +417,9 @@ class CSVGenerator:
                                                                                 x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'] + "-" +
                                                                                 b['cname'] + "-" + e['cname'])
                                                                             csv_writer.writerow (the_relation)
+        return counter
 
-
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
-
-    def codings10(self):
-        level = 10
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
-
+    def codings10(self, csv_writer):
         counter = 0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -470,17 +457,9 @@ class CSVGenerator:
                                                                                         x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'] + "-" +
                                                                                         b['cname'] + "-" + e['cname'] + "-" + f['cname'])
                                                                                     csv_writer.writerow (the_relation)
+        return counter
 
-
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
-
-    def codings11(self):
-        level = 11
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
-        csv_writer = csv.writer(the_file)
-        csv_writer.writerow (self.get_header(level))
-
+    def codings11(self, csv_writer):
         counter = 0
         for r['fid'], r['fname'], r['cid'], r['cname'], r['begin'], r['end'] in self.cods:
             for c['fid'], c['fname'], c['cid'], c['cname'], c['begin'], c['end'] in self.cods:
@@ -521,6 +500,4 @@ class CSVGenerator:
                                                                                                 x['cname'] + "-" + y['cname'] + "-" + z['cname'] + "-" + a['cname'] + "-" +
                                                                                                 b['cname'] + "-" + e['cname'] + "-" + f['cname'] + "-" + g['cname'])
                                                                                             csv_writer.writerow (the_relation)
-
-        the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        return counter
