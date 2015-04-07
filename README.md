@@ -26,8 +26,7 @@ How do I reference this code?
 If you want to reference this code p
 
 
-ULLOA Roberto (2015). RQDA-to-CSV: Overlapping RQDA Codes Finder. Python Code Version 1.0.0. https://github.com/robertour/rqda-to-csv.
-
+Roberto. (2015). RQDA-to-CSV: First Release. Zenodo. 10.5281/zenodo.16647
 
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.16647.svg)](http://dx.doi.org/10.5281/zenodo.16647)
