@@ -1,7 +1,27 @@
-RQDA-to-gephi
+RQDA-to-CSV: Overlapped RQDA Codes Finder (Version 1.0.0)
+---------------------------------------------------------
 
-I am not particularly proud of this code but I hope I will be improving it. It started with the idea of plot a dataset that was tagged in RQDA (http://rqda.r-forge.r-project.org/) into gephi (http://gephi.github.io/), but it ended containing other features.
+This code take as an input an RQDA file generated with the RQDA Package (http://rqda.r-forge.r-project.org/) for Qualitative Data Analysis in R.
 
-Right now is mainly code that you are free to use and modify. Don't hesitate to ask me how to use it, or send bug reports or ideas. 
+The code will search for tags that overlap in the text. Each time there is an overlap of n tags, a csv line is added to an external file, specifying the information of each tag. 
+
+How to use it
+-------------
+
+For now you will need to manually modify the `generate_codings.py`. It has comments of what the parameters do. I will improve the input system soon, but basically it is a JSON format. 
+
+You should also add a copy of your RQDA Database directly in the folder that contain this file and rename the RQDA file to `db.rqda`
+
+Questions
+---------
+
+Please feel free to contact me if you have any questions. I am trying to organize the files.
 
 
+How do I reference this code?
+-----------------------------
+
+If you want to reference this code p
+
+
+ULLOA Roberto (2015). RQDA-to-CSV: Overlapping RQDA Codes Finder. Python Code Version 1.0.0. https://github.com/robertour/rqda-to-csv.
