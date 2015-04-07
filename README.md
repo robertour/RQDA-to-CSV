@@ -5,6 +5,8 @@ This code take as an input an RQDA file generated with the RQDA Package (http://
 
 The code will search for tags that overlap in the text. Each time there is an overlap of n tags, a csv line is added to an external file, specifying the information of each tag. 
 
+The script can also convert the RQDA database into a CSV Gephi friendly format (https://gephi.github.io/).
+
 How to use it
 -------------
 
