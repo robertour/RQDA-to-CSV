@@ -147,7 +147,7 @@ class RQDA():
                     ON freecode.id = treecode.cid
                     LEFT JOIN codecat
                         ON treecode.catid = codecat.catid
-            WHERE freecode.status = 1  AND codecat.name IN (""" + codecat_names + """)
+            WHERE freecode.status = 1 AND treecode.status = 1 AND codecat.name IN (""" + codecat_names + """)
             """
             self.cursor1.execute(sql)
             fetched = self.cursor1.fetchall()
