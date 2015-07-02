@@ -10,9 +10,18 @@ The script can also convert the RQDA database into a CSV Gephi friendly format (
 How to use it
 -------------
 
-For now you will need to manually modify the `generate_codings.py`. It has comments of what the parameters do. I will improve the input system soon, but basically it is a JSON format. 
+Python Code
+===========
 
-You should also add a copy of your RQDA Database directly in the folder that contain this file and rename the RQDA file to `db.rqda`
+The Python code is in the folder `python`. For now you will need to manually modify the `generate_codings.py`. It has comments of what the parameters do. A configuration example is provided in the `example.py` file.
+
+You should also add a copy of your RQDA Database directly in the python folder and rename the RQDA file to `db.rqda`
+
+R Code 
+======
+
+The R code is being added to `R scripts` folder. It is partially configuration, and it should serve as an example of how we process the tags in our project.
+
 
 Questions
 ---------
