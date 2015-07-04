@@ -1,8 +1,12 @@
 # Codings filename
-filename = "/home/tico/git/rqda-to-gephi/2 - Skill_open,Skill_closed -  - Goals,Emotion,Effect,Imagery,Time - /codings2.csv"
+filename = "/home/tico/git/rqda-to-gephi/2 - Skill_open,Skill_closed -  - Goals,Emotion,Effect,Imagery,Time - /codings2_doubled.csv"
 
 # List of the columns that refers to the filenames that are in the table
-filename_columns <- c("Skill_closed", "Skill_open")
+filename_columns <- c("Skill_closed", "Skill_open","Skill_closed2", "Skill_open2")
+
+# select the bar colors (red, blue, gray1-100)
+bar_colors <- c("gray25","gray50","gray75","gray100")
+
 
 # select the codes that are interesting
 select_codes = c( 
@@ -79,7 +83,7 @@ datacodes_order <- datacodes[desc_order,]
 # remove the ones with no ocurrences
 datacodes <- subset(datacodes_order, datacodes_order[,sort_by] > 0)
 # transpose the data
-dcodes<-t(as.matrix(datacodes[,1:2]))
+dcodes<-t(as.matrix(datacodes[,1:ncol(datacodes)]))
 
 # Calculate the st error manually
 tab_stderr <- tapply(sum_codings2$Freq, list(codes=sum_codings2$codes, type=sum_codings2$type), function(x) sd(x)/sqrt(length(x))) # st error
@@ -90,14 +94,16 @@ data_stderr <- data_stderr[desc_order, ]
 # Removes those rows that have no frequencies
 data_stderr <- subset(data_stderr, datacodes_order[,sort_by] > 0)
 # Transpose the data
-dstderr<-t(as.matrix(data_stderr[,1:2]))
+dstderr<-t(as.matrix(data_stderr[,1:ncol(data_stderr)]))
 
 
-par(mar = c(4, 16, 2, 2) + 0.2, cex.axis=0.8) #add room for the rotated labels
+plot.new()
+width <- max(strwidth(colnames(dcodes), units = "inches", cex=4.5))
+par(mar = c(4, width, 2, 2) + 0.2, cex.axis=0.8) #add room for the rotated labels
 y<-barplot(dcodes, beside=TRUE,
         legend.text=rownames(dcodes), horiz=TRUE,
         args.legend=list(bty="n",horiz=FALSE),
-        col=c("gray","white"),
+        col=bar_colors,
         border="black",
         xlim=c(0,ceiling(max(dcodes+dstderr))),
         xlab="",
@@ -112,4 +118,5 @@ arrows(x0=dcodes-dstderr,
        code=3,
        length=0.04,
        lwd=1)
+
 
