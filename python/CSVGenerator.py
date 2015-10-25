@@ -42,8 +42,8 @@ class CSVGenerator:
         xstr = lambda s: s or ""
         self.directory = (str(codings) + " - " + xstr(file_catnames) + " - " +
             xstr(code_filters) + " - " + xstr(code_catnames) + " - " +\
-            xstr(code_names)).replace("'", "")
-
+            xstr(code_names)).replace("'", "").replace(" ", "")
+        
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
 
@@ -93,7 +93,7 @@ class CSVGenerator:
 
 
     def generate_nodes(self):
-        the_file = open( self.directory + '/nodes.csv','wb')
+        the_file = open( os.path.join(self.directory, '/nodes.csv'),'wt')
         nodes = csv.writer(the_file)
         header=['Id','Label','Categories']
         header.extend(self.all_code_cats)
@@ -106,7 +106,7 @@ class CSVGenerator:
     def codings_gephi(self):
         self.generate_nodes()
         level = 2
-        the_file = open( self.directory + "/edges.csv",'wb')
+        the_file = open( os.path.join(self.directory, "edges.csv"),'wt')
         edges = csv.writer(the_file)
 
         header=['Source','Target','Type', 'filename']
@@ -131,13 +131,13 @@ class CSVGenerator:
                     edges.writerow (the_relation)
 
         the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        print((self.directory  + "(level = " + str(level) + "): " + str(counter)))
 
 
     def filtered_codings_gephi(self):
         self.generate_nodes()
         level = 2 + 1
-        the_file = open( self.directory + "/edges.csv",'wb')
+        the_file = open( os.path.join(self.directory, "edges.csv"),'wt')
         edges = csv.writer(the_file)
 
         header=['Source','Target','Type', 'filename']
@@ -165,11 +165,12 @@ class CSVGenerator:
                             edges.writerow (the_relation)
 
         the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        print((self.directory  + "(level = " + str(level) + "): " + str(counter)))
 
     def codings(self, level):
 
-        the_file = open( self.directory + "/codings" + str(level) + ".csv",'wb')
+        the_file = open( os.path.join(self.directory, 
+                                      ("codings" + str(level) + ".csv")),'wt')
         csv_writer = csv.writer(the_file)
         csv_writer.writerow (self.get_header(level))
 
@@ -199,7 +200,7 @@ class CSVGenerator:
             counter = self.codings11(csv_writer)
 
         the_file.close()
-        print self.directory  + "(level = " + str(level) + "): " + str(counter)
+        print((self.directory  + "(level = " + str(level) + "): " + str(counter)))
 
 
     def codings1(self, csv_writer):
