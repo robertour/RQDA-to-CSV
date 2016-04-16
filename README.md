@@ -35,7 +35,7 @@ How do I reference this code?
 If you want to reference this code p
 
 
-Roberto. (2015). RQDA-to-CSV: First Release. Zenodo. 10.5281/zenodo.16647
+Ulloa, R. (2015). RQDA-to-CSV: First Release. Zenodo. 10.5281/zenodo.16647
 
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.16647.svg)](http://dx.doi.org/10.5281/zenodo.16647)
