@@ -1,5 +1,5 @@
 RQDA-to-CSV: Overlapped RQDA Codes Finder (Version 1.0.0)
----------------------------------------------------------
+=========================================================
 
 This code take as an input an RQDA project file generated with the RQDA Package (http://rqda.r-forge.r-project.org/) for Qualitative Data Analysis in R.
 
@@ -17,10 +17,10 @@ A new row is created each time tagA and tagB appear together. Currently, the scr
 The script can also convert the RQDA database into a CSV Gephi friendly format (https://gephi.github.io/).
 
 How to use it
--------------
+=============
 
 Python Code
-===========
+-----------
 
 1. Install Python
 2. Place a copy of your RQDA database (project) file directly in the python foloder and rename the RQDA file `db.rqda`
@@ -28,21 +28,21 @@ Python Code
 4. Finally, run the `generate_codings.py` file. Folders with the results will be created accoding to the configuration.
 
 R Code 
-======
+------
 
 The R code is being added to `R scripts` folder. It is partially configured, and it should serve as an example of how we process the tags in our project.
 
 
 Questions
----------
+=========
 
 Please feel free to contact me if you have any questions.
 
 
 How do I reference this code?
------------------------------
+==============================
 
-If you want to reference this code p
+If you want to reference this code please use the following:
 
 
 Ulloa, R. (2015). RQDA-to-CSV: First Release. Zenodo. 10.5281/zenodo.16647
