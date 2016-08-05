@@ -16,11 +16,11 @@ A new row is created each time tagA and tagB appear together. Currently, the scr
 
 The script can also convert the RQDA database into a CSV Gephi friendly format (https://gephi.github.io/).
 
-### A. How to use it?
+## A. How to use it?
 
-#### A.1. Python Code
+### A.1. Python Code
 
-##### A.1.i. Run the provided example
+#### A.1.i. Run the provided example
 
 1. Install Python
 2. Go to the python directory
@@ -29,7 +29,7 @@ The script can also convert the RQDA database into a CSV Gephi friendly format (
 
 The script open the RQDA project file (called `db.rqda`), and look for the specified combinations in the file `configuration.py`
 
-##### A.1.ii. Configure your RQDA database
+#### A.1.ii. Configure your RQDA database
 
 In order to configure your own RQDA data to be processed, you will need to deal with two files. 
 
@@ -39,9 +39,9 @@ In order to configure your own RQDA data to be processed, you will need to deal 
 4. Replace the `db.rqda` with your own RQDA project file
 5. Finally, run the scripts with `python run.py`. Folders with the results will be created accoding to the configuration.
 
-#### A.2. R Code 
+### A.2. R Code 
 
-##### A.2.i. Run the provided example
+#### A.2.i. Run the provided example
 
 1. Make sure you run the Python provided example first (See A.1.i.)
 2. Install R 
@@ -49,7 +49,7 @@ In order to configure your own RQDA data to be processed, you will need to deal 
 4. Set the [working directory of R](https://support.rstudio.com/hc/en-us/articles/200711843-Working-Directories-and-Workspaces) to R-scrips folder.
 5. Run the `codings1.R`, `codings2.R` and `codings3.R` to see the graph examples.
 
-##### A.2.ii. Configure your project
+#### A.2.ii. Configure your project
 
 1. Make sure you run the Python scripts with you RQDA database (See A.1.ii.)
 2. Open the `codings2.R` (or any of the other two examples)
@@ -76,12 +76,12 @@ In order to configure your own RQDA data to be processed, you will need to deal 
 7. Run the R-Script
 
 
-### B. Questions
+## B. Questions
 
 Please feel free to contact me if you have any questions.
 
 
-### C. How do I reference this code?
+## C. How do I reference this code?
 
 
 If you want to reference this code please use the following:
