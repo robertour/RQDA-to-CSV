@@ -59,20 +59,20 @@ In order to configure your own RQDA data to be processed, you will need to deal 
 
 4. Specify the filename categories that are going to be compared in the graphs
 
-    filename_columns <- c("fairytales", "others")
+        filename_columns <- c("fairytales", "others")
 
 5. Add as many colors as categories you need
 
-    bar_colors <- c("white","gray")
+        bar_colors <- c("white","gray")
     
 6. Specifify the codes combination that you are interested in
 
-    select_codes = c( 
-        # 1st code
-        "valence_positive|valence_negative", 
-        # 2nd code
-        "focus_maincharacter|focus_other"
-    )
+        select_codes = c( 
+            # 1st code
+            "valence_positive|valence_negative", 
+            # 2nd code
+            "focus_maincharacter|focus_other"
+        )
 7. Run the R-Script
 
 
