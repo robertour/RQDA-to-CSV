@@ -1,28 +1,21 @@
-# CONFIGURATION
+library(car)
 
 # Codings filename
-filename = "../python/1-fairytales,others--focus,sentence,style,valence-/codings1.csv"
+filename = "../python/1-Skill_open,Skill_closed--Goals,Emotion,Effect,Imagery,Time-/codings1.csv"
 
 # List of the columns that refers to the filenames that are in the table
-filename_columns <- c("fairytales", "others")
+filename_columns <- c("Skill_closed", "Skill_open")
 
-# select the bar colors for as many filenames as there is
+# select the bar colors (red, blue, gray1-100)
+#bar_colors <- c("gray25","gray50","gray75","gray100")
 bar_colors <- c("white","gray")
 
-# select the codes that are interesting, each element of the list gives a regular expression that
-# acts as a criteria, all criteria (i.e. elements of the lists) should be met in order to appear
-# in the graph. Usually you would have as many criteria as overlapped codes were search in Python
+# select the codes that are interesting
 select_codes = c( 
-    # 1st Code
-    "focus_|valence_"
+    # 1st code
+    "imagery_"
 )
 
-################################
-################################
-########## R-CODE ##############
-################################
-################################
-library(car)
 
 # open the file
 codings1 <- read.table(filename, header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
