@@ -171,7 +171,7 @@ class CSVGenerator:
 
         the_file = open( os.path.join(self.directory, 
                                       ("codings" + str(level) + ".csv")),'wt')
-        csv_writer = csv.writer(the_file)
+        csv_writer = csv.writer(the_file, lineterminator='\n')
         csv_writer.writerow (self.get_header(level))
 
         counter = 0

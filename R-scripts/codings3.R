@@ -26,6 +26,9 @@ select_codes = c(
 ########## R-CODE ##############
 ################################
 ################################
+library(car)
+
+
 # open the file
 codings3 <- read.table(filename, header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 
